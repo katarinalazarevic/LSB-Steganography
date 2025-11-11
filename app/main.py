@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-"""
-LSB Steganografija - Skrivanje poruka u slike
-Autor: [Tvoje ime]
-"""
 
 from PIL import Image
 import numpy as np
@@ -37,28 +33,17 @@ class LSBSteganography:
         return available_bits // 8
     
     def encode(self, image_path, message, output_path):
-        """
-        Enkoduje poruku u sliku koristeći LSB tehniku.
-        
-        Proces:
-        1. Učitava sliku i konvertuje u RGB
-        2. Proverava da li poruka stane u sliku
-        3. Dodaje delimiter na kraj poruke
-        4. Konvertuje poruku u binarne bite
-        5. Menja LSB svakog piksela sa bitovima poruke
-        6. Čuva modificiranu sliku
-        
-        Args:
-            image_path: putanja do originalne slike
-            message: tekst koji želimo da sakrijemo
-            output_path: putanja gde čuvamo sliku sa sakrivenom porukom
-        """
         try:
             img = Image.open(image_path)
             
             if img.mode != 'RGB':
                 img = img.convert('RGB')
             
+            print("\n" + "="*60)
+            print(f"KODIRANJE")
+            print("\n" + "="*60)
+            print( f"Poruka: {(message)} .")
+
             max_bytes = self._max_bytes_capacity(img)
             message_with_delimiter = message + self.delimiter
             
@@ -97,21 +82,6 @@ class LSBSteganography:
             return False
     
     def decode(self, image_path):
-        """
-        Dekoduje poruku iz slike.
-        
-        Proces:
-        1. Učitava sliku
-        2. Ekstraktuje LSB iz svakog piksela
-        3. Konvertuje bite u tekst
-        4. Traži delimiter i vraća poruku pre njega
-        
-        Args:
-            image_path: putanja do slike sa sakrivenom porukom
-            
-        Returns:
-            Sakrivena poruka ili None ako nije pronađena
-        """
         try:
             img = Image.open(image_path)
             if img.mode != 'RGB':
@@ -126,7 +96,10 @@ class LSBSteganography:
                 binary_message += str(byte & 1)
             
             decoded_text = self._binary_to_text(binary_message)
-            
+            print("\n" + "="*60)
+            print(f"DEKODIRANJE")
+            print("\n" + "="*60)
+
             # Tražimo delimiter
             if self.delimiter in decoded_text:
                 message = decoded_text.split(self.delimiter)[0]
@@ -261,7 +234,7 @@ Primeri upotrebe:
         
         # Poređenje
         print("\n")
-        stego.compare_images('demo_image.png', 'encoded_demo_1.png')
+        stego.compare_images('demo_image.png', 'encoded_demo_2.png')
     
     elif args.action == 'encode':
         if len(args.files) < 3:
